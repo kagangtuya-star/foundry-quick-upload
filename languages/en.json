@@ -1,3 +1,65 @@
 {
-    "MODULE.hello": "hello"
+  "FQU.ModuleName": "Quick Upload",
+
+  "FQU.Button.Upload": "Quick Upload",
+
+  "FQU.Dialog.Title": "Quick Upload",
+  "FQU.Dialog.NoImage": "No Image Selected",
+  "FQU.Dialog.UploadTitle": "Upload Image",
+  "FQU.Dialog.DropHint": "Drag & Drop or Paste (Ctrl+V)",
+  "FQU.Dialog.ClickToBrowse": "or click to browse",
+  "FQU.Dialog.UrlLabel": "Or Image URL",
+  "FQU.Dialog.SavePath": "Save Path",
+  "FQU.Dialog.Filename": "Filename",
+  "FQU.Dialog.Upload": "Upload & Save",
+  "FQU.Dialog.Processing": "Processing...",
+  "FQU.Dialog.SelectField": "Select Image Field",
+  "FQU.Dialog.SelectFieldHint": "This document has multiple image fields. Please select which one to update:",
+
+  "FQU.Editor.RotateLeft": "Rotate Left 90°",
+  "FQU.Editor.RotateRight": "Rotate Right 90°",
+  "FQU.Editor.FlipH": "Flip Horizontal",
+  "FQU.Editor.FlipV": "Flip Vertical",
+  "FQU.Editor.Reset": "Reset Transforms",
+
+  "FQU.Field.Portrait": "Portrait",
+  "FQU.Field.Token": "Token",
+  "FQU.Field.Background": "Background",
+  "FQU.Field.Foreground": "Foreground",
+  "FQU.Field.Image": "Image",
+
+  "FQU.Toast.Success": "Image uploaded successfully",
+  "FQU.Toast.Failed": "Upload failed",
+
+  "FQU.Error.NoImage": "Please select an image first",
+  "FQU.Error.UrlLoadFailed": "Failed to load image from URL",
+
+  "FQU.Settings.Compression.Name": "Enable Compression",
+  "FQU.Settings.Compression.Hint": "Compress images when converting to WebP format",
+
+  "FQU.Settings.Quality.Name": "Compression Quality",
+  "FQU.Settings.Quality.Hint": "Quality level for WebP compression (0.1 - 1.0)",
+
+  "FQU.Settings.NamingTemplate.Name": "Naming Template",
+  "FQU.Settings.NamingTemplate.Hint": "Template for generated filenames. Available placeholders: {name}, {type}, {hash}",
+
+  "FQU.Settings.HashLength.Name": "Hash Length",
+  "FQU.Settings.HashLength.Hint": "Length of the random hash in filenames",
+
+  "FQU.Settings.HoverButton.Name": "Show Hover Button",
+  "FQU.Settings.HoverButton.Hint": "Display upload button when hovering over images in sheets",
+
+  "FQU.Settings.HeaderButton.Name": "Show Header Button",
+  "FQU.Settings.HeaderButton.Hint": "Display upload button in sheet header controls",
+
+  "FQU.Settings.Paths.ActorPortrait": "Actor Portrait Path",
+  "FQU.Settings.Paths.ActorToken": "Actor Token Path",
+  "FQU.Settings.Paths.Item": "Item Image Path",
+  "FQU.Settings.Paths.SceneBackground": "Scene Background Path",
+  "FQU.Settings.Paths.SceneForeground": "Scene Foreground Path",
+  "FQU.Settings.Paths.Journal": "Journal Entry Path",
+  "FQU.Settings.Paths.RollTable": "Roll Table Path",
+  "FQU.Settings.Paths.Cards": "Cards Path",
+  "FQU.Settings.Paths.Macro": "Macro Path",
+  "FQU.Settings.Paths.Hint": "Path relative to your world folder for storing uploaded images"
 }

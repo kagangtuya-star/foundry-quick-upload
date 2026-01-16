@@ -1,0 +1,89 @@
+<div class="fqu-content">
+  {{!-- Left Column: Preview & Editor --}}
+  <section class="fqu-preview-area" aria-label="Image Preview">
+    <div class="fqu-canvas-wrapper">
+      {{#if hasImage}}
+        <img id="fqu-preview-image" src="{{imageUrl}}" alt="Preview">
+      {{else}}
+        <div class="fqu-placeholder">
+          <i class="fas fa-image" aria-hidden="true"></i>
+          <span>{{localize "FQU.Dialog.NoImage"}}</span>
+        </div>
+      {{/if}}
+    </div>
+
+    {{!-- Editor Controls --}}
+    <div class="fqu-editor-controls {{#unless hasImage}}disabled{{/unless}}" role="toolbar" aria-label="Image Editor">
+      <button type="button" data-action="rotateLeft" data-tooltip="{{localize 'FQU.Editor.RotateLeft'}}" aria-label="{{localize 'FQU.Editor.RotateLeft'}}">
+        <i class="fas fa-undo" aria-hidden="true"></i>
+      </button>
+      <button type="button" data-action="rotateRight" data-tooltip="{{localize 'FQU.Editor.RotateRight'}}" aria-label="{{localize 'FQU.Editor.RotateRight'}}">
+        <i class="fas fa-redo" aria-hidden="true"></i>
+      </button>
+      <div class="fqu-separator" aria-hidden="true"></div>
+      <button type="button" data-action="flipH" data-tooltip="{{localize 'FQU.Editor.FlipH'}}" aria-label="{{localize 'FQU.Editor.FlipH'}}">
+        <i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
+      </button>
+      <button type="button" data-action="flipV" data-tooltip="{{localize 'FQU.Editor.FlipV'}}" aria-label="{{localize 'FQU.Editor.FlipV'}}">
+        <i class="fas fa-arrows-alt-v" aria-hidden="true"></i>
+      </button>
+      <div class="fqu-separator" aria-hidden="true"></div>
+      <button type="button" data-action="reset" data-tooltip="{{localize 'FQU.Editor.Reset'}}" aria-label="{{localize 'FQU.Editor.Reset'}}">
+        <i class="fas fa-sync" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  {{!-- Right Column: Input & Settings --}}
+  <aside class="fqu-sidebar">
+    {{!-- Drop Zone --}}
+    <div class="fqu-drop-zone" data-action="browse" role="button" tabindex="0" aria-label="{{localize 'FQU.Dialog.UploadTitle'}}">
+      <div class="fqu-drop-content">
+        <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+        <h3>{{localize "FQU.Dialog.UploadTitle"}}</h3>
+        <p>{{localize "FQU.Dialog.DropHint"}}</p>
+        <p class="fqu-subtext">{{localize "FQU.Dialog.ClickToBrowse"}}</p>
+      </div>
+      <input type="file" accept="image/*" hidden aria-hidden="true">
+    </div>
+
+    {{!-- URL Input --}}
+    <div class="fqu-input-group">
+      <label for="fqu-url-input">{{localize "FQU.Dialog.UrlLabel"}}</label>
+      <div class="fqu-url-input">
+        <input type="text" id="fqu-url-input" name="urlInput" placeholder="https://...">
+        <button type="button" data-action="loadUrl" aria-label="Load URL">
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    {{!-- Save Configuration --}}
+    <div class="fqu-save-config">
+      <div class="fqu-field">
+        <label for="fqu-save-path">{{localize "FQU.Dialog.SavePath"}}</label>
+        <div class="fqu-path-selector">
+          <input type="text" id="fqu-save-path" name="savePath" value="{{savePath}}" readonly>
+          <button type="button" data-action="pickPath" aria-label="Browse folders">
+            <i class="fas fa-folder-open" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="fqu-field">
+        <label for="fqu-filename">{{localize "FQU.Dialog.Filename"}}</label>
+        <div class="fqu-filename-input">
+          <input type="text" id="fqu-filename" name="filename" value="{{filename}}">
+          <span class="fqu-extension" aria-label="file extension">.webp</span>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Footer Actions --}}
+    <footer class="fqu-footer">
+      <button type="button" class="fqu-save-button" data-action="save" {{#unless hasImage}}disabled{{/unless}}>
+        <i class="fas fa-check" aria-hidden="true"></i>
+        {{localize "FQU.Dialog.Upload"}}
+      </button>
+    </footer>
+  </aside>
+</div>

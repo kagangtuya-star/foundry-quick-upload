@@ -1,0 +1,65 @@
+{
+  "FQU.ModuleName": "快速上传",
+
+  "FQU.Button.Upload": "快速上传",
+
+  "FQU.Dialog.Title": "快速上传",
+  "FQU.Dialog.NoImage": "未选择图片",
+  "FQU.Dialog.UploadTitle": "上传图片",
+  "FQU.Dialog.DropHint": "拖放或粘贴 (Ctrl+V)",
+  "FQU.Dialog.ClickToBrowse": "或点击浏览",
+  "FQU.Dialog.UrlLabel": "或输入图片 URL",
+  "FQU.Dialog.SavePath": "保存路径",
+  "FQU.Dialog.Filename": "文件名",
+  "FQU.Dialog.Upload": "上传并保存",
+  "FQU.Dialog.Processing": "处理中...",
+  "FQU.Dialog.SelectField": "选择图片字段",
+  "FQU.Dialog.SelectFieldHint": "此文档有多个图片字段，请选择要更新的字段：",
+
+  "FQU.Editor.RotateLeft": "向左旋转 90°",
+  "FQU.Editor.RotateRight": "向右旋转 90°",
+  "FQU.Editor.FlipH": "水平镜像",
+  "FQU.Editor.FlipV": "垂直镜像",
+  "FQU.Editor.Reset": "重置变换",
+
+  "FQU.Field.Portrait": "肖像",
+  "FQU.Field.Token": "Token",
+  "FQU.Field.Background": "背景图",
+  "FQU.Field.Foreground": "前景图",
+  "FQU.Field.Image": "图片",
+
+  "FQU.Toast.Success": "图片上传成功",
+  "FQU.Toast.Failed": "上传失败",
+
+  "FQU.Error.NoImage": "请先选择图片",
+  "FQU.Error.UrlLoadFailed": "无法从 URL 加载图片",
+
+  "FQU.Settings.Compression.Name": "启用压缩",
+  "FQU.Settings.Compression.Hint": "转换为 WebP 格式时压缩图片",
+
+  "FQU.Settings.Quality.Name": "压缩质量",
+  "FQU.Settings.Quality.Hint": "WebP 压缩质量等级 (0.1 - 1.0)",
+
+  "FQU.Settings.NamingTemplate.Name": "命名模板",
+  "FQU.Settings.NamingTemplate.Hint": "生成文件名的模板。可用占位符：{name}（名称）、{type}（类型）、{hash}（哈希）",
+
+  "FQU.Settings.HashLength.Name": "哈希长度",
+  "FQU.Settings.HashLength.Hint": "文件名中随机哈希的长度",
+
+  "FQU.Settings.HoverButton.Name": "显示悬浮按钮",
+  "FQU.Settings.HoverButton.Hint": "在表单图片上悬浮时显示上传按钮",
+
+  "FQU.Settings.HeaderButton.Name": "显示标题栏按钮",
+  "FQU.Settings.HeaderButton.Hint": "在表单标题栏显示上传按钮",
+
+  "FQU.Settings.Paths.ActorPortrait": "角色肖像路径",
+  "FQU.Settings.Paths.ActorToken": "角色 Token 路径",
+  "FQU.Settings.Paths.Item": "物品图片路径",
+  "FQU.Settings.Paths.SceneBackground": "场景背景图路径",
+  "FQU.Settings.Paths.SceneForeground": "场景前景图路径",
+  "FQU.Settings.Paths.Journal": "日志条目路径",
+  "FQU.Settings.Paths.RollTable": "随机表路径",
+  "FQU.Settings.Paths.Cards": "卡牌路径",
+  "FQU.Settings.Paths.Macro": "宏路径",
+  "FQU.Settings.Paths.Hint": "相对于世界文件夹的路径，用于存储上传的图片"
+}
