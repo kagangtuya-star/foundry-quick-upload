@@ -14,6 +14,7 @@ export class UploadController {
     const { document, documentKind, field } = request;
     const name = request.name || document?.name || 'image';
     const file = request.file;
+    const originalSize = file instanceof Blob ? file.size : null;
 
     if (!documentKind || !field) {
       throw new Error('Missing document metadata');
@@ -33,6 +34,7 @@ export class UploadController {
 
     // Process image (convert to webp)
     const processedBlob = await this.imagePipeline.process(file);
+    const processedSize = processedBlob instanceof Blob ? processedBlob.size : null;
 
     // Upload to storage
     const { url } = await this.storageAdapter.upload(path, processedBlob, filename);
@@ -40,6 +42,6 @@ export class UploadController {
     // Update document field
     await this.documentUpdater.update(document, documentKind, field, url);
 
-    return { url, filename, path };
+    return { url, filename, path, originalSize, processedSize };
   }
 }

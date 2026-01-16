@@ -29,6 +29,7 @@
 
   "FQU.Toast.Success": "Image uploaded successfully",
   "FQU.Toast.Failed": "Upload failed",
+  "FQU.Toast.UploadInfo": "Converted size {before} -> {after} (Change {change}). Uploaded to: {path}",
 
   "FQU.Error.NoImage": "Please select an image first",
   "FQU.Error.UrlLoadFailed": "Failed to load image from URL",

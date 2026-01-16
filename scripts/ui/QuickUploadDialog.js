@@ -258,7 +258,7 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       const filename = (filenameInput?.value?.trim() || this.#filename) + '.webp';
 
       const uploadController = game.modules.get(MODULE_ID).uploadController;
-      await uploadController.execute({
+      const result = await uploadController.execute({
         document: this.#document,
         documentKind: this.#documentKind,
         field: this.#field,
@@ -266,7 +266,22 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
         file: this.#imageBlob
       });
 
-      ui.notifications.info(game.i18n.localize('FQU.Toast.Success'));
+      const originalSize = result?.originalSize ?? (this.#imageBlob instanceof Blob ? this.#imageBlob.size : null);
+      const processedSize = result?.processedSize;
+      const uploadPath = result?.url;
+
+      if (Number.isFinite(originalSize) && Number.isFinite(processedSize) && uploadPath) {
+        const before = this.#formatBytes(originalSize);
+        const after = this.#formatBytes(processedSize);
+        const diff = processedSize - originalSize;
+        const change = `${diff >= 0 ? '+' : '-'}${this.#formatBytes(Math.abs(diff))}`;
+        ui.notifications.info('FQU.Toast.UploadInfo', {
+          localize: true,
+          format: { before, after, change, path: uploadPath }
+        });
+      } else {
+        ui.notifications.info(game.i18n.localize('FQU.Toast.Success'));
+      }
       this.close();
     } catch (error) {
       console.error('Quick Upload failed:', error);
@@ -286,5 +301,19 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       this.#filerobotAdapter.destroy();
     }
     super._onClose(options);
+  }
+
+  #formatBytes(bytes) {
+    const value = Number(bytes);
+    if (!Number.isFinite(value)) return '';
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let size = value;
+    let unitIndex = 0;
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex += 1;
+    }
+    const precision = unitIndex === 0 ? 0 : size < 10 ? 2 : size < 100 ? 1 : 0;
+    return `${size.toFixed(precision)} ${units[unitIndex]}`;
   }
 }
