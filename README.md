@@ -1,5 +1,9 @@
 # Quick Upload
 
+![PixPin_2026-01-17_02-42-34](https://github.com/user-attachments/assets/ab136941-e31e-49fe-b9d8-412081a41417)
+![PixPin_2026-01-17_02-47-01](https://github.com/user-attachments/assets/1e0ca70d-680d-48e2-912c-2562865cb337)
+
+
 [English](#english) | [简体中文](#简体中文)
 
 ---
@@ -35,7 +39,7 @@ Quick Upload is a Foundry VTT module that speeds up image updates for documents.
 ## Installation
 1. In Foundry VTT, go to **Add-on Modules** → **Install Module**.
 2. Paste the manifest URL:
-   `https://github.com/<user>/<repo>/releases/latest/download/module.json`
+   `https://github.com/kagangtuya-star/foundry-quick-upload/releases/latest/download/module.json`
 3. Click **Install**, then enable **Quick Upload** in your world.
 
 ## Usage
@@ -126,7 +130,7 @@ Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖
 ## 安装
 1. 在 Foundry VTT 中进入 **Add-on Modules** → **Install Module**。
 2. 粘贴清单地址：
-   `https://github.com/<user>/<repo>/releases/latest/download/module.json`
+   `https://github.com/kagangtuya-star/foundry-quick-upload/releases/latest/download/module.json`
 3. 安装后在世界中启用 **Quick Upload**。
 
 ## 使用方法
