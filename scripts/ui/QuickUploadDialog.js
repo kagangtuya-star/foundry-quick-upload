@@ -184,16 +184,68 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
     }
   }
 
+  static #parseS3Path(value) {
+    const raw = String(value ?? '').trim().replace(/\\/g, '/');
+    const match = raw.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
+    if (!match) {
+      return null;
+    }
+    return { bucket: match[1], path: match[2] ?? '' };
+  }
+
+  static #formatS3Path(bucket, path) {
+    const cleanedPath = String(path ?? '').replace(/^\/+/, '').replace(/\/+$/, '');
+    return cleanedPath ? `s3:${bucket}/${cleanedPath}` : `s3:${bucket}`;
+  }
+
   static async #onPickPath(event, target) {
+    const rawPath = String(this.#savePath ?? '').trim();
+    const s3Match = this.#parseS3Path(rawPath);
+    const self = this;
+
     const fp = new FilePicker({
       type: 'folder',
-      current: this.#savePath,
-      callback: (path) => {
-        this.#savePath = path;
-        const pathInput = this.element.querySelector('input[name="savePath"]');
-        if (pathInput) pathInput.value = path;
-      }
+      current: s3Match ? String(s3Match.path ?? '').replace(/^\/+/, '') : rawPath
     });
+
+    if (s3Match) {
+      fp.activeSource = 's3';
+    }
+
+    // v13: Use form.handler instead of callback
+    fp.options.form = {
+      closeOnSubmit: true,
+      handler: async (event, form, formData) => {
+        const data = formData.object ?? Object.fromEntries(formData.entries());
+        const rawSelected = String(data.file ?? data.target ?? fp.request ?? '').trim();
+
+        console.log('FQU FilePicker form.handler:', {
+          formData: data,
+          activeSource: fp.activeSource,
+          sources: fp.sources,
+          request: fp.request
+        });
+
+        const directS3Match = self.#parseS3Path(rawSelected);
+        if (directS3Match) {
+          self.#savePath = self.#formatS3Path(directS3Match.bucket, directS3Match.path);
+        } else if (fp.activeSource === 's3') {
+          const bucket = fp.sources?.s3?.bucket ?? s3Match?.bucket;
+          const selectedPath = rawSelected.replace(/^\/+/, '');
+          if (bucket) {
+            self.#savePath = self.#formatS3Path(bucket, selectedPath);
+          } else {
+            self.#savePath = rawSelected;
+          }
+        } else {
+          self.#savePath = rawSelected;
+        }
+
+        const pathInput = self.element.querySelector('input[name="savePath"]');
+        if (pathInput) pathInput.value = self.#savePath;
+      }
+    };
+
     fp.render(true);
   }
 

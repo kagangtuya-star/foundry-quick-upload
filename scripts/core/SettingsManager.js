@@ -8,6 +8,8 @@ export class SettingsManager {
     HASH_LENGTH: 'hashLength',
     HOVER_BUTTON: 'hoverButtonEnabled',
     HEADER_BUTTON: 'headerButtonEnabled',
+    STORAGE_SOURCE: 'storageSource',
+    S3_BUCKET: 's3Bucket',
     PATHS: {
       ACTOR_PORTRAIT: 'pathActorPortrait',
       ACTOR_TOKEN: 'pathActorToken',
@@ -84,6 +86,29 @@ export class SettingsManager {
       default: true
     });
 
+    // Storage settings
+    s.register(MODULE_ID, k.STORAGE_SOURCE, {
+      name: 'FQU.Settings.StorageSource.Name',
+      hint: 'FQU.Settings.StorageSource.Hint',
+      scope: 'world',
+      config: true,
+      type: String,
+      choices: {
+        data: 'FQU.Settings.StorageSource.Data',
+        s3: 'FQU.Settings.StorageSource.S3'
+      },
+      default: 'data'
+    });
+
+    s.register(MODULE_ID, k.S3_BUCKET, {
+      name: 'FQU.Settings.S3Bucket.Name',
+      hint: 'FQU.Settings.S3Bucket.Hint',
+      scope: 'world',
+      config: true,
+      type: String,
+      default: ''
+    });
+
     // Path settings
     this._registerPathSettings();
   }
@@ -150,7 +175,17 @@ export class SettingsManager {
     };
 
     const key = mapping[`${documentKind}:${field}`] || paths.ITEM;
-    const basePath = this._sanitizePath(this.get(key));
+    const rawPath = String(this.get(key) ?? '').trim();
+    const s3Match = rawPath.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
+    const storageSource = this.get(this.KEYS.STORAGE_SOURCE);
+    if (storageSource === 's3' || s3Match) {
+      const bucket = String(this.get(this.KEYS.S3_BUCKET) ?? '').trim() || s3Match?.[1];
+      if (bucket) {
+        const s3Path = this._sanitizePath(s3Match ? (s3Match[2] ?? '') : rawPath);
+        return s3Path ? `s3:${bucket}/${s3Path}` : `s3:${bucket}`;
+      }
+    }
+    const basePath = this._sanitizePath(rawPath);
     const worldId = game?.world?.id;
     const worldPrefix = worldId ? `worlds/${worldId}/` : '';
     const resolvedPath = basePath.startsWith(worldPrefix)
@@ -161,13 +196,32 @@ export class SettingsManager {
 
   static _sanitizePath(value) {
     const raw = String(value ?? '').trim().replace(/\\/g, '/');
-    const parts = raw
-      .split('/')
-      .filter((part) => part && part !== '.' && part !== '..' && !part.includes(':'));
-    if (!parts.length) {
+    const s3Match = raw.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
+    if (s3Match) {
+      const bucket = s3Match[1];
+      const s3Path = String(s3Match[2] ?? '')
+        .split('/')
+        .filter((part) => part && part !== '.' && part !== '..' && !part.includes(':'))
+        .join('/');
+      return s3Path ? `s3:${bucket}/${s3Path}` : `s3:${bucket}`;
+    }
+    const parts = raw.split('/');
+    const cleaned = [];
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (!part || part === '.' || part === '..') continue;
+      if (part.includes(':')) {
+        if (i === 0 && /^s3:[^/]+$/i.test(part)) {
+          cleaned.push(part);
+        }
+        continue;
+      }
+      cleaned.push(part);
+    }
+    if (!cleaned.length) {
       return 'images';
     }
-    return parts.join('/');
+    return cleaned.join('/');
   }
 }
 

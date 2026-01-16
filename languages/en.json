@@ -52,6 +52,16 @@
   "FQU.Settings.HeaderButton.Name": "Show Header Button",
   "FQU.Settings.HeaderButton.Hint": "Display upload button in sheet header controls",
 
+  "FQU.Settings.StorageSource.Name": "Storage Source",
+  "FQU.Settings.StorageSource.Hint": "Choose where uploads are stored",
+  "FQU.Settings.StorageSource.Data": "Local (data)",
+  "FQU.Settings.StorageSource.S3": "Amazon S3",
+
+  "FQU.Settings.S3Bucket.Name": "S3 Bucket",
+  "FQU.Settings.S3Bucket.Hint": "Bucket name for S3 uploads",
+  "FQU.Settings.S3Bucket.AriaLabel": "S3 bucket",
+  "FQU.Settings.S3Bucket.Loading": "Loading buckets...",
+
   "FQU.Settings.Paths.ActorPortrait": "Actor Portrait Path",
   "FQU.Settings.Paths.ActorToken": "Actor Token Path",
   "FQU.Settings.Paths.Item": "Item Image Path",

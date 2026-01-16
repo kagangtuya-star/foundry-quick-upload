@@ -52,6 +52,16 @@
   "FQU.Settings.HeaderButton.Name": "显示标题栏按钮",
   "FQU.Settings.HeaderButton.Hint": "在表单标题栏显示上传按钮",
 
+  "FQU.Settings.StorageSource.Name": "存储来源",
+  "FQU.Settings.StorageSource.Hint": "选择上传文件的存储位置",
+  "FQU.Settings.StorageSource.Data": "本地（data）",
+  "FQU.Settings.StorageSource.S3": "Amazon S3",
+
+  "FQU.Settings.S3Bucket.Name": "S3 桶",
+  "FQU.Settings.S3Bucket.Hint": "用于上传的 S3 bucket 名称",
+  "FQU.Settings.S3Bucket.AriaLabel": "S3 桶",
+  "FQU.Settings.S3Bucket.Loading": "正在加载桶列表...",
+
   "FQU.Settings.Paths.ActorPortrait": "角色肖像路径",
   "FQU.Settings.Paths.ActorToken": "角色 Token 路径",
   "FQU.Settings.Paths.Item": "物品图片路径",
