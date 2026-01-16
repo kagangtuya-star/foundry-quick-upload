@@ -86,14 +86,6 @@ Available helpers:
 - `openDialog(document, field)` - open the upload dialog for a document field.
 - `UploadController`, `ImagePipeline`, `PathResolver` - lower-level helpers.
 
-## Screenshots (placeholders)
-Replace these with your own images.
-
-![Quick Upload Dialog](docs/images/quick-upload-dialog.png)
-![Editor View](docs/images/editor-view.png)
-![Hover Button](docs/images/hover-button.png)
-![Module Settings](docs/images/module-settings.png)
-
 ## Acknowledgements
 - Foundry VTT community and API.
 - Filerobot Image Editor by Scaleflex.
@@ -145,7 +137,7 @@ Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖
    - 从剪贴板粘贴（Ctrl+V）
    - 点击选择本地文件
    - 输入图片 URL（http/https）
-4.（可选）点击 **编辑** 打开内置编辑器。
+   4.（可选）点击 **编辑** 打开内置编辑器。
 5. 设置保存路径与文件名，点击 **上传并保存**。
 
 ## 设置项
@@ -184,12 +176,6 @@ Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖
 可用接口：
 - `openDialog(document, field)` - 打开指定字段的上传弹窗。
 - `UploadController`、`ImagePipeline`、`PathResolver` - 底层辅助类。
-
-## 截图占位（请替换）
-![快速上传弹窗](docs/images/quick-upload-dialog.png)
-![编辑器视图](docs/images/editor-view.png)
-![悬浮按钮](docs/images/hover-button.png)
-![模块设置](docs/images/module-settings.png)
 
 ## 致谢
 - Foundry VTT 社区与 API。
