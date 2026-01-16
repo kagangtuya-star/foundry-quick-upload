@@ -14,7 +14,6 @@ export class UploadController {
     const { document, documentKind, field } = request;
     const name = request.name || document?.name || 'image';
     const file = request.file;
-    const transforms = request.transforms || {};
 
     if (!documentKind || !field) {
       throw new Error('Missing document metadata');
@@ -32,8 +31,8 @@ export class UploadController {
     const path = this.pathResolver.resolve(documentKind, field);
     const filename = this.pathResolver.generateFilename(name, documentKind, field);
 
-    // Process image (apply transforms, convert to webp)
-    const processedBlob = await this.imagePipeline.process(file, transforms);
+    // Process image (convert to webp)
+    const processedBlob = await this.imagePipeline.process(file);
 
     // Upload to storage
     const { url } = await this.storageAdapter.upload(path, processedBlob, filename);

@@ -9,7 +9,7 @@
   --fqu-bg-tertiary: #0f3460;
   --fqu-accent: #e94560;
   --fqu-text: #eaeaea;
-  --fqu-text-muted: #888;
+  --fqu-text-muted: #a0a0a0;
   --fqu-border: #333;
   --fqu-radius: 6px;
 }
@@ -390,6 +390,34 @@
   color: var(--fqu-accent);
 }
 
+/* File Picker Button */
+.fqu-picker-button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(233, 69, 96, 0.9);
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  flex: 0 0 auto;
+}
+
+.fqu-picker-button:hover,
+.fqu-picker-button:focus-visible {
+  background: #e94560;
+  transform: scale(1.05);
+}
+
+.fqu-picker-button:focus-visible {
+  outline: 2px solid #e94560;
+  outline-offset: 2px;
+}
+
 /* Responsive */
 @media (max-width: 700px) {
   .fqu-content {
@@ -401,4 +429,131 @@
     border-left: none;
     border-top: 1px solid var(--fqu-border);
   }
+}
+
+/* Preview Overlay */
+.fqu-preview-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.fqu-canvas-wrapper {
+  position: relative;
+}
+
+.fqu-canvas-wrapper:hover .fqu-preview-overlay,
+.fqu-canvas-wrapper:focus-within .fqu-preview-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Action Buttons */
+.fqu-action-btn {
+  background: var(--fqu-accent);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.fqu-action-btn:hover {
+  transform: translateY(0);
+  background: #ff5e78;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.fqu-action-btn:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.fqu-magic-btn {
+  padding: 0.75rem;
+  border-radius: 50%;
+  background: var(--fqu-bg-tertiary);
+}
+
+.fqu-magic-btn:hover {
+  background: var(--fqu-accent);
+}
+
+/* Processing State */
+.fqu-process-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 26, 46, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 20;
+}
+
+.fqu-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--fqu-bg-tertiary);
+  border-top-color: var(--fqu-accent);
+  border-radius: 50%;
+  animation: fqu-spin 1s linear infinite;
+}
+
+@keyframes fqu-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fqu-process-text {
+  color: var(--fqu-text);
+  font-size: 0.9rem;
+}
+
+.fqu-progress-bar {
+  width: 60%;
+  max-width: 300px;
+  height: 6px;
+  background: var(--fqu-bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fqu-progress-fill {
+  height: 100%;
+  background: var(--fqu-accent);
+  transition: width 0.3s ease;
+}
+
+/* Filerobot Container */
+.fqu-filerobot-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
 }

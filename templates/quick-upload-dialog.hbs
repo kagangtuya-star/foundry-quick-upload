@@ -1,9 +1,16 @@
 <div class="fqu-content">
-  {{!-- Left Column: Preview & Editor --}}
+  {{!-- Left Column: Preview & Editor Launch --}}
   <section class="fqu-preview-area" aria-label="Image Preview">
     <div class="fqu-canvas-wrapper">
       {{#if hasImage}}
         <img id="fqu-preview-image" src="{{imageUrl}}" alt="Preview">
+        {{!-- Overlay Actions --}}
+        <div class="fqu-preview-overlay">
+          <button type="button" class="fqu-action-btn fqu-edit-btn" data-action="openEditor" data-tooltip="{{localize 'FQU.Editor.OpenEditor'}}">
+            <i class="fas fa-edit" aria-hidden="true"></i>
+            <span>{{localize "FQU.Editor.EditButton"}}</span>
+          </button>
+        </div>
       {{else}}
         <div class="fqu-placeholder">
           <i class="fas fa-image" aria-hidden="true"></i>
@@ -12,26 +19,16 @@
       {{/if}}
     </div>
 
-    {{!-- Editor Controls --}}
-    <div class="fqu-editor-controls {{#unless hasImage}}disabled{{/unless}}" role="toolbar" aria-label="Image Editor">
-      <button type="button" data-action="rotateLeft" data-tooltip="{{localize 'FQU.Editor.RotateLeft'}}" aria-label="{{localize 'FQU.Editor.RotateLeft'}}">
-        <i class="fas fa-undo" aria-hidden="true"></i>
-      </button>
-      <button type="button" data-action="rotateRight" data-tooltip="{{localize 'FQU.Editor.RotateRight'}}" aria-label="{{localize 'FQU.Editor.RotateRight'}}">
-        <i class="fas fa-redo" aria-hidden="true"></i>
-      </button>
-      <div class="fqu-separator" aria-hidden="true"></div>
-      <button type="button" data-action="flipH" data-tooltip="{{localize 'FQU.Editor.FlipH'}}" aria-label="{{localize 'FQU.Editor.FlipH'}}">
-        <i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
-      </button>
-      <button type="button" data-action="flipV" data-tooltip="{{localize 'FQU.Editor.FlipV'}}" aria-label="{{localize 'FQU.Editor.FlipV'}}">
-        <i class="fas fa-arrows-alt-v" aria-hidden="true"></i>
-      </button>
-      <div class="fqu-separator" aria-hidden="true"></div>
-      <button type="button" data-action="reset" data-tooltip="{{localize 'FQU.Editor.Reset'}}" aria-label="{{localize 'FQU.Editor.Reset'}}">
-        <i class="fas fa-sync" aria-hidden="true"></i>
-      </button>
+    {{!-- Processing Indicator --}}
+    {{#if isProcessing}}
+    <div class="fqu-process-indicator">
+      <div class="fqu-spinner"></div>
+      <span class="fqu-process-text">{{processingMessage}} {{processingProgress}}%</span>
+      <div class="fqu-progress-bar">
+        <div class="fqu-progress-fill" style="width: {{processingProgress}}%"></div>
+      </div>
     </div>
+    {{/if}}
   </section>
 
   {{!-- Right Column: Input & Settings --}}
@@ -81,7 +78,7 @@
     {{!-- Footer Actions --}}
     <footer class="fqu-footer">
       <button type="button" class="fqu-save-button" data-action="save" {{#unless hasImage}}disabled{{/unless}}>
-        <i class="fas fa-check" aria-hidden="true"></i>
+        <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
         {{localize "FQU.Dialog.Upload"}}
       </button>
     </footer>

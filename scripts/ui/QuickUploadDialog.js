@@ -1,5 +1,6 @@
 import { MODULE_ID } from '../core/SettingsManager.js';
 import { PathResolver } from '../core/PathResolver.js';
+import { FilerobotAdapter } from './FilerobotAdapter.js';
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -18,15 +19,11 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       height: 500
     },
     actions: {
-      rotateLeft: QuickUploadDialog.#onRotateLeft,
-      rotateRight: QuickUploadDialog.#onRotateRight,
-      flipH: QuickUploadDialog.#onFlipH,
-      flipV: QuickUploadDialog.#onFlipV,
-      reset: QuickUploadDialog.#onReset,
       browse: QuickUploadDialog.#onBrowse,
       loadUrl: QuickUploadDialog.#onLoadUrl,
       pickPath: QuickUploadDialog.#onPickPath,
-      save: QuickUploadDialog.#onSave
+      save: QuickUploadDialog.#onSave,
+      openEditor: QuickUploadDialog.#onOpenEditor
     }
   };
 
@@ -41,9 +38,13 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
   #field = '';
   #imageBlob = null;
   #imageUrl = null;
-  #transforms = { rotate: 0, flipX: false, flipY: false, scale: 1, crop: null };
   #savePath = '';
   #filename = '';
+  #isProcessing = false;
+  #processingProgress = 0;
+  #processingMessage = '';
+  #filerobotAdapter = null;
+  #abortController = null;
 
   constructor(options = {}) {
     super(options);
@@ -54,7 +55,6 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
   }
 
   static create(document, field) {
-    // Get base document type, not system-specific class name
     const documentKind = document.documentName || document.constructor.documentName || document.constructor.name;
     const dialog = new QuickUploadDialog({
       document,
@@ -89,27 +89,31 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       filename: this.#filename,
       documentName: this.#document?.name || '',
       fieldLabel,
-      transforms: this.#transforms
+      isProcessing: this.#isProcessing,
+      processingProgress: this.#processingProgress,
+      processingMessage: this.#processingMessage
     };
   }
 
   _onRender(context, options) {
     super._onRender(context, options);
+    this.#abortController?.abort();
+    this.#abortController = new AbortController();
     this._setupEventListeners();
   }
 
   _setupEventListeners() {
     const element = this.element;
+    const signal = this.#abortController.signal;
 
-    // Drag and drop
     element.addEventListener('dragover', (e) => {
       e.preventDefault();
       element.classList.add('fqu-drag-over');
-    });
+    }, { signal });
 
     element.addEventListener('dragleave', () => {
       element.classList.remove('fqu-drag-over');
-    });
+    }, { signal });
 
     element.addEventListener('drop', async (e) => {
       e.preventDefault();
@@ -118,9 +122,8 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       if (files?.length > 0 && files[0].type.startsWith('image/')) {
         await this._loadImage(files[0]);
       }
-    });
+    }, { signal });
 
-    // Paste
     element.addEventListener('paste', async (e) => {
       const items = e.clipboardData?.items;
       if (!items) return;
@@ -131,50 +134,25 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
           break;
         }
       }
-    });
+    }, { signal });
 
-    // File input
     const fileInput = element.querySelector('input[type="file"]');
     fileInput?.addEventListener('change', async (e) => {
       const file = e.target.files?.[0];
       if (file) await this._loadImage(file);
-    });
+    }, { signal });
 
-    // Make dialog focusable for paste events
     element.setAttribute('tabindex', '0');
     element.focus();
   }
 
   async _loadImage(file) {
+    if (this.#imageUrl) {
+      URL.revokeObjectURL(this.#imageUrl);
+    }
     this.#imageBlob = file;
     this.#imageUrl = URL.createObjectURL(file);
-    this.#transforms = { rotate: 0, flipX: false, flipY: false, scale: 1, crop: null };
     this.render();
-  }
-
-  static async #onRotateLeft(event, target) {
-    this.#transforms.rotate = (this.#transforms.rotate - 90) % 360;
-    this._updatePreview();
-  }
-
-  static async #onRotateRight(event, target) {
-    this.#transforms.rotate = (this.#transforms.rotate + 90) % 360;
-    this._updatePreview();
-  }
-
-  static async #onFlipH(event, target) {
-    this.#transforms.flipX = !this.#transforms.flipX;
-    this._updatePreview();
-  }
-
-  static async #onFlipV(event, target) {
-    this.#transforms.flipY = !this.#transforms.flipY;
-    this._updatePreview();
-  }
-
-  static async #onReset(event, target) {
-    this.#transforms = { rotate: 0, flipX: false, flipY: false, scale: 1, crop: null };
-    this._updatePreview();
   }
 
   static async #onBrowse(event, target) {
@@ -188,7 +166,15 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
     if (!url) return;
 
     try {
-      const response = await fetch(url);
+      const parsedUrl = new URL(url);
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        throw new Error('Invalid protocol');
+      }
+
+      const response = await fetch(url, {
+        credentials: 'omit',
+        mode: 'cors'
+      });
       if (!response.ok) throw new Error('Failed to fetch');
       const blob = await response.blob();
       if (!blob.type.startsWith('image/')) throw new Error('Not an image');
@@ -209,6 +195,51 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       }
     });
     fp.render(true);
+  }
+
+  static async #onOpenEditor(event, target) {
+    if (!this.#imageBlob) {
+      ui.notifications.warn(game.i18n.localize('FQU.Error.NoImage'));
+      return;
+    }
+
+    const editorContainer = document.createElement('div');
+    editorContainer.id = 'fqu-filerobot-container';
+    editorContainer.className = 'fqu-filerobot-container';
+    document.body.appendChild(editorContainer);
+
+    this.#filerobotAdapter = new FilerobotAdapter({
+      container: editorContainer,
+      onSave: async (blob, metadata) => {
+        await this._handleEditorSave(blob, metadata);
+      },
+      onClose: () => {
+        this._handleEditorClose();
+      }
+    });
+
+    await this.#filerobotAdapter.open(this.#imageBlob);
+  }
+
+  async _handleEditorSave(blob, metadata) {
+    if (this.#imageUrl) {
+      URL.revokeObjectURL(this.#imageUrl);
+    }
+    this.#imageBlob = blob;
+    this.#imageUrl = URL.createObjectURL(blob);
+    this._handleEditorClose();
+    this.render();
+  }
+
+  _handleEditorClose() {
+    if (this.#filerobotAdapter) {
+      this.#filerobotAdapter.destroy();
+      this.#filerobotAdapter = null;
+    }
+    const container = document.getElementById('fqu-filerobot-container');
+    if (container) {
+      container.remove();
+    }
   }
 
   static async #onSave(event, target) {
@@ -232,8 +263,7 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
         documentKind: this.#documentKind,
         field: this.#field,
         name: this.#document.name || 'image',
-        file: this.#imageBlob,
-        transforms: this.#transforms
+        file: this.#imageBlob
       });
 
       ui.notifications.info(game.i18n.localize('FQU.Toast.Success'));
@@ -247,23 +277,13 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
     }
   }
 
-  _updatePreview() {
-    const img = this.element.querySelector('#fqu-preview-image');
-    if (!img) return;
-
-    const { rotate, flipX, flipY, scale } = this.#transforms;
-    const transforms = [];
-    if (rotate) transforms.push(`rotate(${rotate}deg)`);
-    if (flipX) transforms.push('scaleX(-1)');
-    if (flipY) transforms.push('scaleY(-1)');
-    if (scale !== 1) transforms.push(`scale(${scale})`);
-
-    img.style.transform = transforms.join(' ');
-  }
-
   _onClose(options) {
+    this.#abortController?.abort();
     if (this.#imageUrl) {
       URL.revokeObjectURL(this.#imageUrl);
+    }
+    if (this.#filerobotAdapter) {
+      this.#filerobotAdapter.destroy();
     }
     super._onClose(options);
   }

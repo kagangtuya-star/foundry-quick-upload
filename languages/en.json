@@ -16,11 +16,10 @@
   "FQU.Dialog.SelectField": "Select Image Field",
   "FQU.Dialog.SelectFieldHint": "This document has multiple image fields. Please select which one to update:",
 
-  "FQU.Editor.RotateLeft": "Rotate Left 90°",
-  "FQU.Editor.RotateRight": "Rotate Right 90°",
-  "FQU.Editor.FlipH": "Flip Horizontal",
-  "FQU.Editor.FlipV": "Flip Vertical",
-  "FQU.Editor.Reset": "Reset Transforms",
+  "FQU.Editor.OpenEditor": "Open Editor",
+  "FQU.Editor.EditButton": "Edit",
+
+  "FQU.State.Processing": "Processing...",
 
   "FQU.Field.Portrait": "Portrait",
   "FQU.Field.Token": "Token",

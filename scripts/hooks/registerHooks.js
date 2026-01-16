@@ -45,6 +45,18 @@ export function registerHooks() {
     HoverButton.injectGenericSheet(element, app.document, 'image');
   });
 
+  // Token Config (Prototype Token)
+  Hooks.on('renderTokenConfig', (app, html, data) => {
+    const element = html instanceof jQuery ? html[0] : html;
+    HoverButton.injectTokenConfig(element, app.token?.actor || app.actor || app.document);
+  });
+
+  // Prototype Token Config (from Actor sheet)
+  Hooks.on('renderPrototypeTokenConfig', (app, html, data) => {
+    const element = html instanceof jQuery ? html[0] : html;
+    HoverButton.injectTokenConfig(element, app.actor || app.document);
+  });
+
   // Header Controls for ApplicationV2 sheets
   Hooks.on('getActorSheetHeaderButtons', (app, buttons) => {
     const newButtons = HeaderButton.getButtons(app.document, 'Actor');

@@ -1,9 +1,16 @@
 import { SettingsManager } from './SettingsManager.js';
 
 export class ImagePipeline {
-  async process(file, transforms = {}) {
+  async process(file) {
     if (!file) {
       throw new Error('No image file provided');
+    }
+
+    if (file instanceof Blob && file.type === 'image/webp') {
+      const compressEnabled = SettingsManager.get(SettingsManager.KEYS.COMPRESS_ENABLED);
+      if (!compressEnabled) {
+        return file;
+      }
     }
 
     const img = await this._loadImage(file);
@@ -14,18 +21,9 @@ export class ImagePipeline {
       throw new Error('Canvas rendering context unavailable');
     }
 
-    let { width, height } = this._calculateDimensions(img, transforms);
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.save();
-    this._applyTransforms(ctx, canvas, transforms);
-    ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
-    ctx.restore();
-
-    if (transforms.crop) {
-      return this._applyCrop(canvas, transforms.crop);
-    }
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
 
     return this._toWebpBlob(canvas);
   }
@@ -41,7 +39,7 @@ export class ImagePipeline {
           URL.revokeObjectURL(objectUrl);
           resolve(img);
         };
-        img.onerror = (error) => {
+        img.onerror = () => {
           URL.revokeObjectURL(objectUrl);
           reject(new Error('Failed to load image'));
         };
@@ -62,75 +60,6 @@ export class ImagePipeline {
         reject(new Error('Unsupported image source'));
       }
     });
-  }
-
-  _calculateDimensions(img, transforms) {
-    let width = img.width;
-    let height = img.height;
-
-    if (transforms.scale && transforms.scale !== 1) {
-      width = Math.round(width * transforms.scale);
-      height = Math.round(height * transforms.scale);
-    }
-
-    if (transforms.rotate === 90 || transforms.rotate === 270 ||
-        transforms.rotate === -90 || transforms.rotate === -270) {
-      [width, height] = [height, width];
-    }
-
-    return { width, height };
-  }
-
-  _applyTransforms(ctx, canvas, transforms) {
-    const { width, height } = canvas;
-
-    ctx.translate(width / 2, height / 2);
-
-    if (transforms.rotate) {
-      ctx.rotate((transforms.rotate * Math.PI) / 180);
-    }
-
-    if (transforms.flipX) {
-      ctx.scale(-1, 1);
-    }
-
-    if (transforms.flipY) {
-      ctx.scale(1, -1);
-    }
-
-    const drawWidth = transforms.rotate === 90 || transforms.rotate === 270 ||
-                      transforms.rotate === -90 || transforms.rotate === -270 ? height : width;
-    const drawHeight = transforms.rotate === 90 || transforms.rotate === 270 ||
-                       transforms.rotate === -90 || transforms.rotate === -270 ? width : height;
-
-    ctx.translate(-drawWidth / 2, -drawHeight / 2);
-  }
-
-  async _applyCrop(canvas, crop) {
-    const cropWidth = crop?.width ?? crop?.w;
-    const cropHeight = crop?.height ?? crop?.h;
-
-    if (!cropWidth || !cropHeight) {
-      throw new Error('Invalid crop dimensions');
-    }
-
-    const croppedCanvas = document.createElement('canvas');
-    const ctx = croppedCanvas.getContext('2d');
-
-    if (!ctx) {
-      throw new Error('Canvas rendering context unavailable');
-    }
-
-    croppedCanvas.width = cropWidth;
-    croppedCanvas.height = cropHeight;
-
-    ctx.drawImage(
-      canvas,
-      crop.x, crop.y, cropWidth, cropHeight,
-      0, 0, cropWidth, cropHeight
-    );
-
-    return this._toWebpBlob(croppedCanvas);
   }
 
   async _toWebpBlob(canvas) {
@@ -189,7 +118,7 @@ export class ImagePipeline {
   _normalizeUrl(value) {
     try {
       return new URL(String(value ?? ''), window.location.origin).toString();
-    } catch (error) {
+    } catch {
       throw new Error('Invalid image URL');
     }
   }
