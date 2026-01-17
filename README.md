@@ -13,7 +13,7 @@
 
 ## Overview
 Quick Upload is a Foundry VTT module that speeds up image updates for documents. It supports drag & drop, clipboard paste, and URL import, includes a built-in image editor, and converts images to WebP automatically.
-
+Streamline your asset workflow by setting default paths for Actors and Items. Access the uploader via sheet headers or image hover buttons to import from your clipboard, files, or URLs. The module automatically converts images to WebP, applies custom naming conventions, and sorts them into specific folders.
 ## Compatibility
 - Foundry VTT v13 (minimum/verified)
 
@@ -104,7 +104,8 @@ MIT. See `LICENSE`.
 
 ## 概述
 Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖拽、剪贴板粘贴与 URL 导入，内置图片编辑器，并自动转换为 WebP。
-
+用户只需预先为不同类型的信纸（如角色、物品等）设定好对应的存储路径，即可通过顶部的控件或图片上的悬浮按钮，一键唤起上传界面。
+模组不仅支持读取剪贴板、本地文件及网络图片链接，还提供简易的图片编辑功能。上传完成后，图片将自动转换为 WebP 格式，并按照您自定义的命名规则，自动归档至指定的文件夹中，提升资源管理效率。
 ## 兼容性
 - Foundry VTT v13（最低/已验证）
 
