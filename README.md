@@ -2,6 +2,7 @@
 
 ![PixPin_2026-01-17_02-42-34](https://github.com/user-attachments/assets/ab136941-e31e-49fe-b9d8-412081a41417)
 ![PixPin_2026-01-17_02-47-01](https://github.com/user-attachments/assets/1e0ca70d-680d-48e2-912c-2562865cb337)
+![PixPin_2026-01-17_17-21-02](https://github.com/user-attachments/assets/96aac07b-f9cb-420c-956e-e2686ab7330f)
 
 
 [English](#english) | [简体中文](#简体中文)
