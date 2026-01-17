@@ -325,12 +325,13 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
       if (Number.isFinite(originalSize) && Number.isFinite(processedSize) && uploadPath) {
         const before = this.#formatBytes(originalSize);
         const after = this.#formatBytes(processedSize);
-        const diff = processedSize - originalSize;
-        const change = `${diff >= 0 ? '+' : '-'}${this.#formatBytes(Math.abs(diff))}`;
+        const percent = originalSize > 0 ? Math.round((1 - processedSize / originalSize) * 100) : 0;
+        const percentStr = `${percent >= 0 ? '-' : '+'}${Math.abs(percent)}%`;
         ui.notifications.info('FQU.Toast.UploadInfo', {
           localize: true,
-          format: { before, after, change, path: uploadPath }
+          format: { before, after, percent: percentStr, path: uploadPath }
         });
+        navigator.clipboard.writeText(uploadPath).catch(() => {});
       } else {
         ui.notifications.info(game.i18n.localize('FQU.Toast.Success'));
       }

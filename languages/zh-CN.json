@@ -29,7 +29,7 @@
 
   "FQU.Toast.Success": "图片上传成功",
   "FQU.Toast.Failed": "上传失败",
-  "FQU.Toast.UploadInfo": "转换大小 {before} -> {after}（变化 {change}），上传到：{path}",
+  "FQU.Toast.UploadInfo": "{before} -> {after}（{percent}），路径已复制到剪切板",
 
   "FQU.Error.NoImage": "请先选择图片",
   "FQU.Error.UrlLoadFailed": "无法从 URL 加载图片",
