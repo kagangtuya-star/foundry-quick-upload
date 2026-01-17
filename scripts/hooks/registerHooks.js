@@ -1,48 +1,63 @@
 import { MODULE_ID } from '../core/SettingsManager.js';
 import { HoverButton } from '../ui/HoverButton.js';
 import { HeaderButton } from '../ui/HeaderButton.js';
+import { SheetBadge } from '../ui/SheetBadge.js';
 
 export function registerHooks() {
   // Actor Sheets
   Hooks.on('renderActorSheet', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectActorSheet(element, app.document);
+    HeaderButton.injectHeaderBadge(element, app.document, 'Actor');
+    SheetBadge.inject(element, app.document, 'Actor');
   });
 
   // Item Sheets
   Hooks.on('renderItemSheet', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectItemSheet(element, app.document);
+    HeaderButton.injectHeaderBadge(element, app.document, 'Item');
+    SheetBadge.inject(element, app.document, 'Item');
   });
 
   // Scene Config
   Hooks.on('renderSceneConfig', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectSceneConfig(element, app.document);
+    HeaderButton.injectHeaderBadge(element, app.document, 'Scene');
+    SheetBadge.inject(element, app.document, 'Scene');
   });
 
   // Journal Entry Sheet
   Hooks.on('renderJournalSheet', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectJournalSheet(element, app.document);
+    HeaderButton.injectHeaderBadge(element, app.document, 'JournalEntry');
+    SheetBadge.inject(element, app.document, 'JournalEntry');
   });
 
   // RollTable Config
   Hooks.on('renderRollTableConfig', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectGenericSheet(element, app.document, 'image');
+    HeaderButton.injectHeaderBadge(element, app.document, 'RollTable');
+    SheetBadge.inject(element, app.document, 'RollTable');
   });
 
   // Cards Config
   Hooks.on('renderCardsConfig', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectGenericSheet(element, app.document, 'image');
+    HeaderButton.injectHeaderBadge(element, app.document, 'Cards');
+    SheetBadge.inject(element, app.document, 'Cards');
   });
 
   // Macro Config
   Hooks.on('renderMacroConfig', (app, html, data) => {
     const element = html instanceof jQuery ? html[0] : html;
     HoverButton.injectGenericSheet(element, app.document, 'image');
+    HeaderButton.injectHeaderBadge(element, app.document, 'Macro');
+    SheetBadge.inject(element, app.document, 'Macro');
   });
 
   // Token Config (Prototype Token)

@@ -425,6 +425,49 @@
   color: var(--fqu-accent, #e94560);
 }
 
+/* Header Badge - Matches Foundry's header-button structure */
+.fqu-header-badge {
+  cursor: pointer;
+}
+
+.fqu-header-badge:hover,
+.fqu-header-badge:hover > i {
+  color: var(--fqu-accent, #e94560);
+  text-shadow: 0 0 6px var(--fqu-accent, #e94560);
+}
+
+/* Sheet Badge - Minimal icon in sheet-header */
+.fqu-sheet-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  margin: 0;
+  cursor: pointer;
+  color: var(--fqu-accent, #e94560);
+  font-size: 0.9em;
+  line-height: 1;
+  z-index: 10;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fqu-sheet-badge {
+    transition: text-shadow 0.15s ease, transform 0.1s ease;
+  }
+}
+
+.fqu-sheet-badge:hover {
+  text-shadow: 0 0 6px var(--fqu-accent, #e94560);
+  transform: scale(1.1);
+}
+
+.fqu-sheet-badge:focus-visible {
+  outline: 2px solid var(--fqu-accent, #e94560);
+  outline-offset: 2px;
+}
+
 /* File Picker Button */
 .fqu-picker-button {
   width: 28px;

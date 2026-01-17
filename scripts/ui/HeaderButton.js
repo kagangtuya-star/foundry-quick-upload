@@ -53,6 +53,49 @@ export class HeaderButton {
   }
 
   /**
+   * Inject minimal badge into window-header (before close button)
+   * @param {HTMLElement} element - The application element
+   * @param {Document} document - The Foundry document
+   * @param {string} documentKind - Document type name
+   */
+  static injectHeaderBadge(element, document, documentKind) {
+    if (!element || !document) return;
+    if (!SettingsManager.get(SettingsManager.KEYS.HEADER_BUTTON)) return;
+    if (!this.isSupported(documentKind)) return;
+
+    const header = element.querySelector('header.window-header');
+    if (!header) return;
+
+    // Idempotency check
+    if (header.querySelector('.fqu-header-badge')) return;
+
+    const fields = this._getFieldsForDocument(documentKind);
+    const onClick = fields.length === 1
+      ? () => QuickUploadDialog.create(document, fields[0])
+      : () => this._showFieldSelector(document, documentKind, fields);
+
+    // Create <a> element matching Foundry's header-button structure
+    const badge = globalThis.document.createElement('a');
+    badge.className = 'header-button control fqu-header-badge';
+    badge.dataset.tooltip = game.i18n.localize('FQU.Button.Upload');
+    badge.dataset.tooltipDirection = 'UP';
+    badge.innerHTML = '<i class="fas fa-cloud-upload-alt"></i>';
+    badge.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    });
+
+    // Insert before close button or append to header
+    const closeBtn = header.querySelector('[data-action="close"], .header-button.close, .close');
+    if (closeBtn) {
+      closeBtn.before(badge);
+    } else {
+      header.appendChild(badge);
+    }
+  }
+
+  /**
    * AppV1 format for v12 and legacy (get*SheetHeaderButtons)
    * @param {Document} document
    * @param {string} documentKind
