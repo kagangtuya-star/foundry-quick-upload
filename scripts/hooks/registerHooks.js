@@ -57,38 +57,64 @@ export function registerHooks() {
     HoverButton.injectTokenConfig(element, app.actor || app.document);
   });
 
-  // Header Controls for ApplicationV2 sheets
+  // ===========================================
+  // v13+ AppV2: Unified header controls hook
+  // ===========================================
+  Hooks.on('getHeaderControlsApplicationV2', (app, controls) => {
+    const doc = app.document;
+    if (!doc) return;
+
+    const kind = doc.documentName ?? doc.constructor?.documentName;
+    if (!HeaderButton.isSupported(kind)) return;
+
+    // Idempotency check with namespaced action
+    if (controls.some(c => c.action === `${MODULE_ID}.upload`)) return;
+
+    const newControls = HeaderButton.getControls(doc, kind, { forceV2: true });
+    controls.unshift(...newControls);
+  });
+
+  // ===========================================
+  // v12/Legacy AppV1: Individual header button hooks
+  // ===========================================
   Hooks.on('getActorSheetHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'Actor');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getItemSheetHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'Item');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getSceneConfigHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'Scene');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getJournalSheetHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'JournalEntry');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getRollTableConfigHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'RollTable');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getCardsConfigHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'Cards');
     buttons.unshift(...newButtons);
   });
 
   Hooks.on('getMacroConfigHeaderButtons', (app, buttons) => {
+    if (HeaderButton.isV13Plus) return;
     const newButtons = HeaderButton.getButtons(app.document, 'Macro');
     buttons.unshift(...newButtons);
   });
