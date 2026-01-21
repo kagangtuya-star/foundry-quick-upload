@@ -41,6 +41,7 @@ export class SheetBadge {
   static inject(html, doc, documentKind) {
     if (!html || !doc) return;
     if (!SettingsManager.get(SettingsManager.KEYS.HEADER_BUTTON)) return;
+    if (game.system?.id !== 'dnd5e') return;
     if (!SUPPORTED_DOCUMENT_TYPES.includes(documentKind)) return;
 
     const adapter = this.getAdapter();
