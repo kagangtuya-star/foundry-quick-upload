@@ -11,8 +11,8 @@
   },
   "authors": [
     {
-      "name": "Your Name",
-      "url": "https://github.com/yourusername"
+      "name": "kagangtuya-star",
+      "url": "https://github.com/kagangtuya-star"
     }
   ],
   "relationships": {
@@ -34,7 +34,7 @@
     {
       "lang": "cn",
       "name": "简体中文",
-      "path": "languages/zh-CN.json"
+      "path": "languages/cn.json"
     }
   ],
   "url": "#{URL}#",
