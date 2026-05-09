@@ -62,6 +62,9 @@
   "FQU.Settings.S3Bucket.AriaLabel": "S3 桶",
   "FQU.Settings.S3Bucket.Loading": "正在加载桶列表...",
 
+  "FQU.Settings.BasePath.Name": "总路径",
+  "FQU.Settings.BasePath.Hint": "可选总路径前缀。留空时使用默认世界路径；填写后将拼接为“总路径/类型路径”，S3 模式则拼接到 bucket 内。",
+
   "FQU.Settings.Paths.ActorPortrait": "角色肖像路径",
   "FQU.Settings.Paths.ActorToken": "角色 Token 路径",
   "FQU.Settings.Paths.Item": "物品图片路径",
@@ -71,5 +74,5 @@
   "FQU.Settings.Paths.RollTable": "随机表路径",
   "FQU.Settings.Paths.Cards": "卡牌路径",
   "FQU.Settings.Paths.Macro": "宏路径",
-  "FQU.Settings.Paths.Hint": "相对于世界文件夹的路径，用于存储上传的图片"
+  "FQU.Settings.Paths.Hint": "类型路径。仅在未设置总路径时生效；设置总路径后，将改用模块默认类型路径后缀进行拼接。"
 }

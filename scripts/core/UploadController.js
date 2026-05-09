@@ -29,8 +29,8 @@ export class UploadController {
     }
 
     // Resolve target path
-    const path = this.pathResolver.resolve(documentKind, field);
-    const filename = this.pathResolver.generateFilename(name, documentKind, field);
+    const path = String(request.pathOverride ?? '').trim() || this.pathResolver.resolve(documentKind, field);
+    const filename = String(request.filenameOverride ?? '').trim() || this.pathResolver.generateFilename(name, documentKind, field);
 
     // Process image (convert to webp)
     const processedBlob = await this.imagePipeline.process(file);

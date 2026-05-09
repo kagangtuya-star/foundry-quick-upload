@@ -62,6 +62,9 @@
   "FQU.Settings.S3Bucket.AriaLabel": "S3 bucket",
   "FQU.Settings.S3Bucket.Loading": "Loading buckets...",
 
+  "FQU.Settings.BasePath.Name": "Base Path",
+  "FQU.Settings.BasePath.Hint": "Optional upload path prefix. Leave empty to use the default world path; when set, uploads resolve as \"base path/type path\", or inside the S3 bucket when S3 is selected.",
+
   "FQU.Settings.Paths.ActorPortrait": "Actor Portrait Path",
   "FQU.Settings.Paths.ActorToken": "Actor Token Path",
   "FQU.Settings.Paths.Item": "Item Image Path",
@@ -71,5 +74,5 @@
   "FQU.Settings.Paths.RollTable": "Roll Table Path",
   "FQU.Settings.Paths.Cards": "Cards Path",
   "FQU.Settings.Paths.Macro": "Macro Path",
-  "FQU.Settings.Paths.Hint": "Path relative to your world folder for storing uploaded images"
+  "FQU.Settings.Paths.Hint": "Type-specific path. Only used when Base Path is empty; when Base Path is set, the module's default type suffix is used instead."
 }

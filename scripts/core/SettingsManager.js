@@ -10,6 +10,7 @@ export class SettingsManager {
     HEADER_BUTTON: 'headerButtonEnabled',
     STORAGE_SOURCE: 'storageSource',
     S3_BUCKET: 's3Bucket',
+    BASE_PATH: 'basePath',
     PATHS: {
       ACTOR_PORTRAIT: 'pathActorPortrait',
       ACTOR_TOKEN: 'pathActorToken',
@@ -21,6 +22,18 @@ export class SettingsManager {
       CARDS: 'pathCards',
       MACRO: 'pathMacro'
     }
+  };
+
+  static DEFAULT_PATHS = {
+    [this.KEYS.PATHS.ACTOR_PORTRAIT]: 'images/actors/portraits',
+    [this.KEYS.PATHS.ACTOR_TOKEN]: 'images/actors/tokens',
+    [this.KEYS.PATHS.ITEM]: 'images/items',
+    [this.KEYS.PATHS.SCENE_BACKGROUND]: 'images/scenes/backgrounds',
+    [this.KEYS.PATHS.SCENE_FOREGROUND]: 'images/scenes/foregrounds',
+    [this.KEYS.PATHS.JOURNAL]: 'images/journals',
+    [this.KEYS.PATHS.ROLL_TABLE]: 'images/tables',
+    [this.KEYS.PATHS.CARDS]: 'images/cards',
+    [this.KEYS.PATHS.MACRO]: 'images/macros'
   };
 
   static register() {
@@ -109,23 +122,23 @@ export class SettingsManager {
       default: ''
     });
 
+    s.register(MODULE_ID, k.BASE_PATH, {
+      name: 'FQU.Settings.BasePath.Name',
+      hint: 'FQU.Settings.BasePath.Hint',
+      scope: 'world',
+      config: true,
+      type: String,
+      default: '',
+      filePicker: 'folder'
+    });
+
     // Path settings
     this._registerPathSettings();
   }
 
   static _registerPathSettings() {
     const paths = this.KEYS.PATHS;
-    const defaults = {
-      [paths.ACTOR_PORTRAIT]: 'images/actors/portraits',
-      [paths.ACTOR_TOKEN]: 'images/actors/tokens',
-      [paths.ITEM]: 'images/items',
-      [paths.SCENE_BACKGROUND]: 'images/scenes/backgrounds',
-      [paths.SCENE_FOREGROUND]: 'images/scenes/foregrounds',
-      [paths.JOURNAL]: 'images/journals',
-      [paths.ROLL_TABLE]: 'images/tables',
-      [paths.CARDS]: 'images/cards',
-      [paths.MACRO]: 'images/macros'
-    };
+    const defaults = this.DEFAULT_PATHS;
 
     const names = {
       [paths.ACTOR_PORTRAIT]: 'FQU.Settings.Paths.ActorPortrait',
@@ -160,7 +173,7 @@ export class SettingsManager {
     return game.settings.set(MODULE_ID, key, value);
   }
 
-  static getPath(documentKind, field) {
+  static getPathSettingKey(documentKind, field) {
     const paths = this.KEYS.PATHS;
     const mapping = {
       'Actor:portrait': paths.ACTOR_PORTRAIT,
@@ -174,10 +187,37 @@ export class SettingsManager {
       'Macro:image': paths.MACRO
     };
 
-    const key = mapping[`${documentKind}:${field}`] || paths.ITEM;
+    return mapping[`${documentKind}:${field}`] || paths.ITEM;
+  }
+
+  static getBasePath() {
+    return this._sanitizePath(this.get(this.KEYS.BASE_PATH), { fallback: '' });
+  }
+
+  static getDefaultPathSuffix(documentKind, field) {
+    const key = this.getPathSettingKey(documentKind, field);
+    return this.DEFAULT_PATHS[key] ?? this.DEFAULT_PATHS[this.KEYS.PATHS.ITEM];
+  }
+
+  static getPath(documentKind, field) {
+    const key = this.getPathSettingKey(documentKind, field);
     const rawPath = String(this.get(key) ?? '').trim();
-    const s3Match = rawPath.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
     const storageSource = this.get(this.KEYS.STORAGE_SOURCE);
+    const basePath = this.getBasePath();
+
+    if (basePath) {
+      const suffixPath = this._sanitizePath(this.getDefaultPathSuffix(documentKind, field));
+      const combinedPath = this._joinPaths(basePath, suffixPath);
+      if (storageSource === 's3') {
+        const bucket = String(this.get(this.KEYS.S3_BUCKET) ?? '').trim();
+        if (bucket) {
+          return `s3:${bucket}/${combinedPath}`;
+        }
+      }
+      return combinedPath;
+    }
+
+    const s3Match = rawPath.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
     if (storageSource === 's3' || s3Match) {
       const bucket = String(this.get(this.KEYS.S3_BUCKET) ?? '').trim() || s3Match?.[1];
       if (bucket) {
@@ -185,16 +225,23 @@ export class SettingsManager {
         return s3Path ? `s3:${bucket}/${s3Path}` : `s3:${bucket}`;
       }
     }
-    const basePath = this._sanitizePath(rawPath);
+    const legacyPath = this._sanitizePath(rawPath);
     const worldId = game?.world?.id;
     const worldPrefix = worldId ? `worlds/${worldId}/` : '';
-    const resolvedPath = basePath.startsWith(worldPrefix)
-      ? basePath
-      : `${worldPrefix}${basePath}`;
+    const resolvedPath = legacyPath.startsWith(worldPrefix)
+      ? legacyPath
+      : `${worldPrefix}${legacyPath}`;
     return resolvedPath.replace(/\/+$/, '');
   }
 
-  static _sanitizePath(value) {
+  static _joinPaths(...values) {
+    return values
+      .map((value) => this._sanitizePath(value, { fallback: '' }))
+      .filter(Boolean)
+      .join('/');
+  }
+
+  static _sanitizePath(value, { fallback = 'images' } = {}) {
     const raw = String(value ?? '').trim().replace(/\\/g, '/');
     const s3Match = raw.match(/^s3:(?:\/\/)?([^/]+)(?:\/(.*))?$/i);
     if (s3Match) {
@@ -219,7 +266,7 @@ export class SettingsManager {
       cleaned.push(part);
     }
     if (!cleaned.length) {
-      return 'images';
+      return fallback;
     }
     return cleaned.join('/');
   }

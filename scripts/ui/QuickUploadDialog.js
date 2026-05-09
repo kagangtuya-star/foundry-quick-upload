@@ -315,7 +315,9 @@ export class QuickUploadDialog extends HandlebarsApplicationMixin(ApplicationV2)
         documentKind: this.#documentKind,
         field: this.#field,
         name: this.#document.name || 'image',
-        file: this.#imageBlob
+        file: this.#imageBlob,
+        pathOverride: this.#savePath,
+        filenameOverride: filename
       });
 
       const originalSize = result?.originalSize ?? (this.#imageBlob instanceof Blob ? this.#imageBlob.size : null);

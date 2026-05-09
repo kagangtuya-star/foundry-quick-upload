@@ -67,6 +67,7 @@ All settings are **world** scope and live under **Module Settings**.
 | Show Header Button | `true` | Show upload button in sheet header. |
 | Storage Source | `data` | Choose the storage backend (`data` or `s3`). |
 | S3 Bucket | `` | Bucket name for S3 uploads. |
+| Base Path | `` | Optional prefix for all upload paths. |
 | Actor Portrait Path | `images/actors/portraits` | Save path for actor portraits. |
 | Actor Token Path | `images/actors/tokens` | Save path for actor tokens. |
 | Item Image Path | `images/items` | Save path for items. |
@@ -78,8 +79,10 @@ All settings are **world** scope and live under **Module Settings**.
 | Macro Image Path | `images/macros` | Save path for macros. |
 
 ## Notes
-- Save paths are resolved under `worlds/<worldId>/...` when using the `data` source.
-- When `s3` is selected, paths are combined as `s3:bucket/path` and are not world-prefixed.
+- When `Base Path` is empty and the `data` source is used, paths resolve under `worlds/<worldId>/...`.
+- When `Base Path` is set, the final upload path becomes `<basePath>/<defaultTypePath>`. Custom per-type path settings are ignored in this mode. Example: `worlds/shared-assets/images/actors/tokens`.
+- When `s3` is selected, the final path becomes `s3:<bucket>/<basePath>/<typePath>` when `Base Path` is set, or `s3:<bucket>/<typePath>` when it is empty.
+- The dialog's Save Path and Filename fields now override the defaults for that upload operation.
 - Uploads always end with `.webp`. If the source is already WebP and compression is disabled, it is reused as-is.
 - URL imports support `http`/`https` only in the dialog UI.
 
@@ -159,6 +162,7 @@ Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖
 | 显示标题栏按钮 | `true` | 表单标题栏显示上传按钮。 |
 | 存储来源 | `data` | 选择存储后端（`data` 或 `s3`）。 |
 | S3 桶 | `` | S3 上传使用的 bucket 名称。 |
+| 总路径 | `` | 所有上传路径的可选统一前缀。 |
 | 角色肖像路径 | `images/actors/portraits` | 角色肖像保存路径。 |
 | 角色 Token 路径 | `images/actors/tokens` | 角色 Token 保存路径。 |
 | 物品图片路径 | `images/items` | 物品图片保存路径。 |
@@ -170,8 +174,10 @@ Quick Upload 是一个用于 Foundry VTT 的快速图片上传模块，支持拖
 | 宏图片路径 | `images/macros` | 宏图片保存路径。 |
 
 ## 说明
-- 使用 `data` 时，保存路径会解析到 `worlds/<worldId>/...`。
-- 选择 `s3` 时，路径会拼成 `s3:bucket/path`，不再加世界前缀。
+- 当“总路径”留空且使用 `data` 时，保存路径会解析到 `worlds/<worldId>/...`。
+- 当“总路径”已设置时，最终路径会拼成 `总路径/默认类型路径`。此模式下会忽略用户自定义的各类型路径设置。例如：`worlds/shared-assets/images/actors/tokens`。
+- 选择 `s3` 时，若设置了“总路径”，最终路径会拼成 `s3:<bucket>/<总路径>/<类型路径>`；否则为 `s3:<bucket>/<类型路径>`。
+- 弹窗中的“保存路径”和“文件名”现在会覆盖本次上传的默认值。
 - 上传结果统一为 `.webp`。若源图已是 WebP 且关闭压缩，将直接复用。
 - 弹窗内的 URL 导入仅支持 `http/https`。
 
